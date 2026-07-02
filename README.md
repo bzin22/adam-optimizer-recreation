@@ -8,7 +8,7 @@ This project implements Adam, AdaGrad, and SGD with Nesterov momentum from scrat
 ### Figure 1: MNIST Logistic Regression ✅
 L2-regularized multi-class logistic regression on MNIST (784-dim image vectors, minibatch size 128). Adam's stepsize is annealed by 1/√t per epoch, matching the paper's Section 4 theoretical prediction.
 
-![Figure 1 Recreation](assets/figure1.png)
+<img width="991" height="486" alt="Screenshot 2026-07-01 at 5 09 50 PM" src="https://github.com/user-attachments/assets/925dc01f-0df5-48ec-8693-b2f93b85fd73" />
 
 **Result:** Adam and SGD+Nesterov converge together and both outperform AdaGrad, consistent with the paper's findings.
 
