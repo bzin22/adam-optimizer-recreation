@@ -1,41 +1,55 @@
 from optimizers import Adam, AdaGrad, SGD_Nesterov
-from train import test_MNIST_logRegression, plot_results
+from train import train, load_MNIST
+from utils import *
+from logreg import *
 
-# simple_experiment = [
-#     (test_simple(0.001, 0.9, 0.999), 'baseline (α=0.001, β₂=0.999)'),
-#     (test_simple(0.01,  0.9, 0.999), 'large lr (α=0.01,  β₂=0.999)'),
-#     (test_simple(0.001, 0.9, 0.99),  'small β₂ (α=0.001, β₂=0.99)'),
-# ]
-# plot_results(simple_experiment, 'Adam convergence on f(x) = x²', 'iteration', 'weights')
+def MNIST_log_reg(optimizer_fn, epochs, inputs, labels):
+    W = np.random.randn(10, 784) * 0.01
+    b = np.random.randn(10, 1) * 0.01
+    params = [W, b]
 
-epochs = 45
-ζ = 1e-8
+    theta = pack(params)
+    optimizer = optimizer_fn(theta)
 
-MNIST_log_regression_Adam = test_MNIST_logRegression(
-    lambda w: Adam(0.001, w, 0.9, 0.999, ζ),
-    lambda b: Adam(0.001, b, 0.9, 0.999, ζ),
-    epochs
-)
+    return train(log_reg_backward, params, optimizer, inputs, labels, epochs)
 
-MNIST_log_regression_AdaGrad = test_MNIST_logRegression(
-    lambda w: AdaGrad(0.001, w, ζ),
-    lambda b: AdaGrad(0.001, b, ζ),
-    epochs
-)
+if __name__ == "__main__":
+    inputs, labels = load_MNIST()
 
-MNIST_log_regression_SGD_Nesterov = test_MNIST_logRegression(
-    lambda w: SGD_Nesterov(0.001, w, decay=0.9),
-    lambda b: SGD_Nesterov(0.001, b, decay=0.9),
-    epochs
-)
+    epochs = 45
+    stepsize = 0.001
+    decay_1 = 0.9
+    decay_2 = 0.999
+    ζ = 1e-8
 
-plot_results(
-    [
-        (MNIST_log_regression_Adam,         'Adam'),
-        (MNIST_log_regression_AdaGrad,      'AdaGrad'),
-        (MNIST_log_regression_SGD_Nesterov, 'SGD + Nesterov'),
-    ],
-    'MNIST Logistic Regression — Figure 1 Recreation',
-    'epoch',
-    'training loss'
-)
+    MNIST_log_reg_Adam = MNIST_log_reg(
+        lambda w: Adam(stepsize, w, decay_1, decay_2, ζ),
+        epochs, 
+        inputs, 
+        labels
+    )
+
+    MNIST_log_reg_AdaGrad = MNIST_log_reg(
+        lambda w: AdaGrad(stepsize, w, ζ),
+        epochs, 
+        inputs, 
+        labels
+    )
+
+    MNIST_log_reg_SGD_Nestrov = MNIST_log_reg(
+        lambda w: SGD_Nesterov(stepsize, w, decay_1),
+        epochs, 
+        inputs, 
+        labels
+    )
+
+    plot_results(
+        [
+            (MNIST_log_reg_Adam,         'Adam'),
+            (MNIST_log_reg_AdaGrad,      'AdaGrad'),
+            (MNIST_log_reg_SGD_Nestrov, 'SGD + Nesterov'),
+        ],
+        'MNIST Logistic Regression — Figure 1 Recreation',
+        'epoch',
+        'training loss'
+    )
