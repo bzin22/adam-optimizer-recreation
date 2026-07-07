@@ -13,7 +13,7 @@ def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=12
     inputs: (N, features), labels: (classes, N)
     """
     start = time.time()
-    
+
     shapes = [p.shape for p in params]
     theta = pack(params) 
     optimizer.weights = theta # optimizer has flattened weights & biases
@@ -27,8 +27,8 @@ def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=12
         epoch_loss = []
         shuffled_input = rng.permutation(N)
 
-        if hasattr(optimizer, 'step_epoch'):
-            optimizer.step_epoch()
+        # if hasattr(optimizer, 'step_epoch'):
+        #     optimizer.step_epoch()
         
         # Mini-batches
         for i in range(0, N, batch_size):

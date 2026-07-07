@@ -56,20 +56,24 @@ class Adam:
         self.decay_2 = decay_2
         self.epsilon = epsilon
 
-        self.m_t, self.v_t = np.zeros(self.weights.shape), np.zeros(self.weights.shape)
+        self.m_t, self.v_t = np.zeros_like(weights), np.zeros_like(weights)
         self.t = 0
 
     def update(self, grad):
+        self.t += 1 
+
         self.m_t = self.decay_1 * self.m_t + (1 - self.decay_1) * grad
         self.v_t = self.decay_2 * self.v_t + (1 - self.decay_2) * grad**2
 
-        m_hat = self.m_t/(1 - self.decay_1**self.t)
-        v_hat = self.v_t/(1 - self.decay_2**self.t)
+        m_hat = self.m_t / (1 - self.decay_1**self.t)
+        v_hat = self.v_t / (1 - self.decay_2**self.t)
 
-        self.weights -= self.stepsize * (1/self.t**0.5) * m_hat / (v_hat**0.5 + self.epsilon)
+        # step_size_modifier = (1/self.t**0.5)
+
+        self.weights -= self.stepsize * m_hat / (v_hat**0.5 + self.epsilon)
 
         return self.weights
     
-    def step_epoch(self):
-        self.t += 1
-        return self.t
+    # def step_epoch(self):
+    #     self.t += 1
+    #     return self.t

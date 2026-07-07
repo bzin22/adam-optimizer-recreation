@@ -86,7 +86,7 @@ def MNIST_log_reg(optimizer_fn, epochs, inputs, labels):
 if __name__ == "__main__":
     inputs, labels = load_MNIST()
 
-    epochs = 200
+    epochs = 15
     stepsize = 0.001 # best is still default settings from paper, 0.001
     decay_1 = 0.9
     decay_2 = 0.999
@@ -96,67 +96,74 @@ if __name__ == "__main__":
 
     gradcheck(1e-5)
 
-    #-----Probe: SGD+Nesterov learning rate grid (15 epochs)------------------------------------------
-#     sgd_grid = [0.003, 0.01, 0.03, 0.1]
-#     sgd_results = {}
+#------Probe: SGD+Nesterov learning rate grid (15 epochs)------------------------------------------
+    sgd_grid = [0.003, 0.01, 0.03, 0.1]
+    sgd_results = {}
  
-#     for alpha in sgd_grid:
-#         print(f"\n--- SGD+Nesterov, alpha={alpha} ---")
-#         history = MNIST_MLP(
-#             lambda w, a=alpha: SGD_Nesterov(a, w, decay_1),
-#             epochs, inputs, labels
-#         )
-#         sgd_results[alpha] = history
-#         np.save(f'probe_sgd_nesterov_a{alpha}.npy', np.array(history))
+    for alpha in sgd_grid:
+        print(f"\n--- SGD+Nesterov, alpha={alpha} ---")
+        history = MNIST_MLP(
+            lambda w, a=alpha: SGD_Nesterov(a, w, decay_1),
+            epochs, inputs, labels
+        )
+        sgd_results[alpha] = history
+        np.save(f'probe_sgd_nesterov_a{alpha}.npy', np.array(history))
  
-# #-----Probe: AdaGrad learning rate grid (15 epochs)-----------------------------------------------
-#     adagrad_grid = [0.001, 0.01, 0.05]
-#     adagrad_results = {}
+#-----Probe: AdaGrad learning rate grid (15 epochs)-----------------------------------------------
+    adagrad_grid = [1e-3, 3e-3, 1e-2, 3e-2]
+    adagrad_results = {}
  
-#     for alpha in adagrad_grid:
-#         print(f"\n--- AdaGrad, alpha={alpha} ---")
-#         history = MNIST_MLP(
-#             lambda w, a=alpha: AdaGrad(a, w, ζ),
-#             epochs, inputs, labels
-#         )
-#         adagrad_results[alpha] = history
-#         np.save(f'probe_adagrad_a{alpha}.npy', np.array(history))
+    for alpha in adagrad_grid:
+        print(f"\n--- AdaGrad, alpha={alpha} ---")
+        history = MNIST_MLP(
+            lambda w, a=alpha: AdaGrad(a, w, ζ),
+            epochs, inputs, labels
+        )
+        adagrad_results[alpha] = history
+        np.save(f'probe_adagrad_a{alpha}.npy', np.array(history))
 
 #-----Probe: Adam learning rate grid (15 epochs)-----------------------------------------------
-    # adam_grid = [0.003]
-    # adam_results = {}
+    adam_grid = [1e-4, 3e-4, 1e-3, 3e-3]
+    adam_results = {}
  
-    # for alpha in adam_grid:
-    #     print(f"\n--- Adam, alpha={alpha} ---")
-    #     history = MNIST_MLP(
-    #         lambda w, a=alpha: Adam(a, w, decay_1, decay_2, ζ),
-    #         epochs, inputs, labels
-    #     )
-    #     adam_results[alpha] = history
-    #     np.save(f'probe_adam_a{alpha}.npy', np.array(history))
+    for alpha in adam_grid:
+        print(f"\n--- Adam, alpha={alpha} ---")
+        history = MNIST_MLP(
+            lambda w, a=alpha: Adam(a, w, decay_1, decay_2, ζ),
+            epochs, inputs, labels
+        )
+        adam_results[alpha] = history
+        np.save(f'probe_adam_a{alpha}.npy', np.array(history))
  
-# #-----Probe summary-------------------------------------------------------------------------------
-#     print("\n===== Probe summary (final 15-epoch loss) =====")
-#     for alpha, history in sgd_results.items():
-#         print(f"SGD+Nesterov alpha={alpha}: {history[-1]:.4f}")
-#     for alpha, history in adagrad_results.items():
-#         print(f"AdaGrad      alpha={alpha}: {history[-1]:.4f}")
-    # for alpha, history in adam_results.items():
-    #     print(f"Adam      alpha={alpha}: {history[-1]:.4f}")
+#-----Probe summary-------------------------------------------------------------------------------
+    print("\n===== Probe summary (final 15-epoch loss) =====")
+    for alpha, history in sgd_results.items():
+        print(f"SGD+Nesterov alpha={alpha}: {history[-1]:.4f}")
+    for alpha, history in adagrad_results.items():
+        print(f"AdaGrad      alpha={alpha}: {history[-1]:.4f}")
+    for alpha, history in adam_results.items():
+        print(f"Adam      alpha={alpha}: {history[-1]:.4f}")
  
-#     plot_results(
-#         [(h, f'SGD+Nesterov α={a}') for a, h in sgd_results.items()],
-#         'SGD+Nesterov LR probe (15 epochs)',
-#         'epoch',
-#         'training loss'
-#     )
+    plot_results(
+        [(h, f'SGD+Nesterov α={a}') for a, h in sgd_results.items()],
+        'SGD+Nesterov LR probe (15 epochs)',
+        'epoch',
+        'training loss'
+    )
  
-#     plot_results(
-#         [(h, f'AdaGrad α={a}') for a, h in adagrad_results.items()],
-#         'AdaGrad LR probe (15 epochs)',
-#         'epoch',
-#         'training loss'
-#     )
+    plot_results(
+        [(h, f'AdaGrad α={a}') for a, h in adagrad_results.items()],
+        'AdaGrad LR probe (15 epochs)',
+        'epoch',
+        'training loss'
+    )
+
+    plot_results(
+        [(h, f'Adam α={a}') for a, h in adam_results.items()],
+        'Adam LR probe (15 epochs)',
+        'epoch',
+        'training loss'
+    )
 
 #-----Experiment: Bias-Correction Term-----------------------------------------------------------
 
@@ -165,34 +172,34 @@ if __name__ == "__main__":
 
 
 #-----Experiment: Multi-layer Perceptron (MLP)---------------------------------------------------
-    MNIST_MLP_Adam = MNIST_MLP(
-        lambda w: Adam(stepsize, w, decay_1, decay_2, ζ),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_adam.npy', np.array(MNIST_MLP_Adam))
+    # MNIST_MLP_Adam = MNIST_MLP(
+    #     lambda w: Adam(stepsize, w, decay_1, decay_2, ζ),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_adam.npy', np.array(MNIST_MLP_Adam))
 
-    MNIST_MLP_AdaGrad = MNIST_MLP(
-        lambda w: AdaGrad(adagrad_alpha_best, w, ζ),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_adam.npy', np.array(MNIST_MLP_AdaGrad))
+    # MNIST_MLP_AdaGrad = MNIST_MLP(
+    #     lambda w: AdaGrad(adagrad_alpha_best, w, ζ),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_adam.npy', np.array(MNIST_MLP_AdaGrad))
 
-    MNIST_MLP_SGD_Nesterov = MNIST_MLP(
-        lambda w: SGD_Nesterov(sgd_alpha_best, w, decay_1),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_adam.npy', np.array(MNIST_MLP_SGD_Nesterov))
+    # MNIST_MLP_SGD_Nesterov = MNIST_MLP(
+    #     lambda w: SGD_Nesterov(sgd_alpha_best, w, decay_1),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_adam.npy', np.array(MNIST_MLP_SGD_Nesterov))
 
-    plot_results(
-        [
-            (MNIST_MLP_Adam,         'Adam'),
-            # (MNIST_MLP_AdaGrad,      'AdaGrad'),
-            # (MNIST_MLP_SGD_Nesterov, 'SGD + Nesterov'),
-        ],
-        'MNIST MLP + Dropout — Figure 2(a) Recreation',
-        'epoch',
-        'training loss'
-    )
+    # plot_results(
+    #     [
+    #         (MNIST_MLP_Adam,         'Adam'),
+    #         # (MNIST_MLP_AdaGrad,      'AdaGrad'),
+    #         # (MNIST_MLP_SGD_Nesterov, 'SGD + Nesterov'),
+    #     ],
+    #     'MNIST MLP + Dropout — Figure 2(a) Recreation',
+    #     'epoch',
+    #     'training loss'
+    # )
 
 #-----Experiment: Logistic Regression------------------------------------------------------------
  
