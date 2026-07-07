@@ -1,4 +1,5 @@
 import torch, torchvision
+import time
 
 from utils import *
 from optimizers import *
@@ -11,7 +12,8 @@ def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=12
     optimizer: single instance whose .weights is the packed vector
     inputs: (N, features), labels: (classes, N)
     """
-
+    start = time.time()
+    
     shapes = [p.shape for p in params]
     theta = pack(params) 
     optimizer.weights = theta # optimizer has flattened weights & biases
@@ -21,6 +23,7 @@ def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=12
     history = []
 
     for e in range(epochs):
+        epoch_start = time.time()
         epoch_loss = []
         shuffled_input = rng.permutation(N)
 
@@ -40,7 +43,9 @@ def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=12
             epoch_loss.append(loss)
 
         history.append(np.mean(epoch_loss))
-        print(f"Epoch {e+1}/{epochs}, loss: {history[-1]:.4f}")
+        
+        print(f"Epoch {e+1}/{epochs}, loss: {history[-1]:.4f}, "
+          f"epoch: {time.time()-epoch_start:.1f}s, total: {(time.time()-start)/60:.1f}min")
         
     return history
 

@@ -10,6 +10,7 @@ def reseed(seed): # only used for gradcheck, not used in actual experiements
 
 def mlp_forward(params, inputs, training=True):
     W1, b1, W2, b2, W3, b3  = params
+    inputs = inputs.T
 
     p_keep_input = 0.8 # keep 80% of the inputs 
     p_keep_hidden = 0.5 # keep 50% of the hidden layers
@@ -44,9 +45,11 @@ def mlp_backward(params, inputs, labels, lam):
     W1, b1, W2, b2, W3, b3  = params
 
     a1, a2, out, scaled_mask_i, scaled_mask_1, scaled_mask_2 = mlp_forward(params, inputs)
+    inputs = inputs.T
 
     loss = -np.mean(np.sum(labels * np.log(out + 1e-12), axis=0)) \
             + (lam / 2) * (np.sum(W1**2) + np.sum(W2**2) + np.sum(W3**2))
+    
     # output layer
     dLdz_3 = (out - labels) / inputs.shape[1]
 

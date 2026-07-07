@@ -32,6 +32,7 @@ def plot_results(experiments, title, xlabel, ylabel):
     plt.figure(figsize=(10, 5))
     for y, x in experiments:
         plt.plot(y, label=x)
+    plt.yscale('log')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
