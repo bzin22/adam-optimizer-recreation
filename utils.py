@@ -1,6 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+def relu(z):
+    return np.maximum(0,z)
+
+def softmax(z):
+    z_shift = z- np.max(z, axis=0, keepdims=True)
+    exp_z = np.exp(z_shift)
+    return exp_z / np.sum(exp_z, axis=0, keepdims=True)
+
 def one_hot(classes, batch): 
     vec = np.zeros((classes, batch.shape[0]))
     for i in range(batch.shape[0]): 

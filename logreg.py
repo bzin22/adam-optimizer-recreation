@@ -1,9 +1,6 @@
 import numpy as np
 
-def softmax(z):
-    z_shift = z- np.max(z, axis=0, keepdims=True)
-    exp_z = np.exp(z_shift)
-    return exp_z / np.sum(exp_z, axis=0, keepdims=True)
+from utils import softmax
 
 def log_reg_forward(params, inputs):
     W, b = params
@@ -14,7 +11,7 @@ def log_reg_backward(params, inputs, labels, lam):
     p = log_reg_forward(params, inputs)
     batch = p.shape[1]
 
-    loss = -np.mean(np.sum(labels * np.log(p), axis=0))
+    loss = -np.mean(np.sum(labels * np.log(p + 1e-12), axis=0))
     grad_W = (1 / batch) * np.dot((p-labels),inputs) + 2 * lam * W
     grad_b = (1 / batch) * np.sum((p-labels), axis=1, keepdims=True)
 

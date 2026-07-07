@@ -3,9 +3,8 @@ import torch, torchvision
 from utils import *
 from optimizers import *
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
 
-def train(loss_and_gradients, params, optimizer, inputs, labels, epochs, batch_size=128, seed=0, lam=0.0001):
+def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=128, seed=0, lam=0.0):
     """
     loss_and_gradients: fn(params, inputs, labels) -> (cost, weight gradients, bias gradients)
     params: list of arrays [W, b]
@@ -28,12 +27,13 @@ def train(loss_and_gradients, params, optimizer, inputs, labels, epochs, batch_s
         if hasattr(optimizer, 'step_epoch'):
             optimizer.step_epoch()
         
+        # Mini-batches
         for i in range(0, N, batch_size):
             idx = shuffled_input[i:i+batch_size]
             batch_input, batch_label = inputs[idx], labels[:,idx]
 
             current_params = unpack(optimizer.weights, shapes) 
-            loss, grads = loss_and_gradients(current_params, batch_input, batch_label, lam)
+            loss, grads = backwards_fn(current_params, batch_input, batch_label, lam)
             grad_vec = pack(grads)
             optimizer.update(grad_vec)
 
