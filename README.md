@@ -6,6 +6,17 @@ NumPy recreation of **"Adam: A Method for Stochastic Optimization"** (Kingma & B
 
 This project implements Adam, AdaGrad, and SGD with Nesterov momentum from scratch in NumPy and reproduces the experiments from the original paper. No PyTorch autograd — all forward passes, backward passes, and optimizer update rules are hand-coded.
 
+#### Interpretation
+
+The corrected Adam implementation appears to be functioning much more plausibly than the initial version, but the reproduction is still not identical to the paper. The main remaining discrepancy is that AdaGrad outperforms Adam at the end of the 200-epoch run.
+My current best hypotheses are:
+
+1. The hyperparameter probe was too short.
+   Adam was selected based on 15-epoch performance, where alpha=0.0003 beat AdaGrad. However, the full experiment is 200 epochs. AdaGrad’s cumulative squared-gradient accumulator naturally anneals its effective learning rate over time, which may explain why it continues improving while Adam plateaus.
+
+2. Dropout + ReLU creates sparse/noisy gradients.
+   AdaGrad is particularly strong in sparse-gradient settings. With ReLU activations and dropout, many units receive zeroed or intermittent gradients, which may make this implementation especially favorable to AdaGrad.
+
 ## Architecture
 
 The codebase is organized so optimizers and the training loop are shared across
@@ -111,7 +122,7 @@ _In progress_
 ## Implementation Notes
 
 - **Variable naming** follows the paper exactly: `α=stepsize`, `β1=decay_1`, `β2=decay_2`, `ε=epsilon`, `θ=weights`, `g=grad`, `t=timestep`
-- The `1/√t` stepsize decay applies **per epoch**, not per minibatch step — an ambiguity in the paper that required empirical debugging to resolve
+- The `1/√t` stepsize decay applies **per epoch**, not per minibatch step, in experiment 1 (only).
 - AdaGrad's learning rate already decays naturally via its accumulator; adding `1/√t` on top causes double decay and severely degrades performance
 
 ## File Structure
@@ -119,8 +130,11 @@ _In progress_
 ```
 
 adam-recreation/
-├── optimizers.py # Adam, AdaGrad, SGD_Nesterov classes
-├── train.py # Training loop, data loading, helpers
+├── optimizers.py # Adam, AdaGrad, SGD_Nesterov, RMSProp, and AdaDelta classes
+├── mlp.py # main model for multi-layer neural network in experiment 2
+├── logreg.py # main model for logistic regression in experiment 1
+├── utils.py # Helper functions like one-hot, pack, unpack
+├── train.py # Training loop and data loading
 ├── experiments.py # Experiment calls and plots
 └── assets/ # Output figures
 
