@@ -31,15 +31,78 @@ the same `Adam` instance handles logreg's 2 arrays (7,850 params) or the MLP's
 
 L2-regularized multi-class logistic regression on MNIST (784-dim image vectors, minibatch size 128). Adam's stepsize is annealed by 1/√t per epoch, matching the paper's Section 4 theoretical prediction.
 
-<img width="991" height="486" alt="Screenshot 2026-07-01 at 5 09 50 PM" src="https://github.com/user-attachments/assets/925dc01f-0df5-48ec-8693-b2f93b85fd73" />
+![Figure 1 Recreation](assets/figure_1_recreation.png)
 
 **Result:** Adam and SGD+Nesterov converge together and both outperform AdaGrad, consistent with the paper's findings.
 
 ### Figure 2: MNIST MLP with Dropout
 
-Two hidden layers of 1000 units, ReLU, dropout. Same optimizer classes as
-Figure 1 — the only change is the model in `mlp.py`.
-_In progress_
+This experiment recreates Figure 2(a) from the Adam paper: training a multilayer perceptron on MNIST with dropout stochastic regularization. The original paper uses a neural network with two fully connected hidden layers of 1000 ReLU units each and minibatch size 128. It compares Adam, AdaGrad, RMSProp, SGD with Nesterov momentum, and AdaDelta on training cost over 200 passes through the full dataset.
+
+Implemented optimizers:
+
+- Adam
+- AdaGrad
+- SGD + Nesterov momentum
+- RMSProp
+- AdaDelta
+
+#### Hyperparameter probes
+
+Before running the full 200-epoch experiment, I ran 15-epoch probes to select learning rates:
+
+```text
+SGD+Nesterov alpha=0.003: 0.1343
+SGD+Nesterov alpha=0.01:  0.0790
+SGD+Nesterov alpha=0.03:  0.0725
+SGD+Nesterov alpha=0.1:   1.0884
+
+AdaGrad alpha=0.001: 0.2049
+AdaGrad alpha=0.003: 0.1050
+AdaGrad alpha=0.01:  0.0679
+AdaGrad alpha=0.03:  0.1167
+
+Adam alpha=0.0001: 0.0922
+Adam alpha=0.0003: 0.0641
+Adam alpha=0.001:  0.1016
+Adam alpha=0.003:  0.2679
+
+RMSProp alpha=0.0001: 0.1013
+RMSProp alpha=0.0003: 0.0862
+RMSProp alpha=0.001:  0.1899
+RMSProp alpha=0.003:  0.4719
+```
+
+#### Selected Settings
+
+Adam: alpha = 0.0003, beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8
+AdaGrad: alpha = 0.01, epsilon = 1e-8
+SGD+Nesterov: alpha = 0.03, momentum = 0.9
+RMSProp: alpha = 0.0003, decay = 0.9, epsilon = 1e-8
+AdaDelta: rho = 0.95, epsilon = 1e-6, alpha = 1.0
+
+### Results
+
+![Figure 2 Recreation](assets/figure_2_recreation.png)
+
+The full 200-epoch run produced the following qualitative ordering:
+AdaGrad reached the lowest final training loss.
+Adam was highly competitive early, but plateaued above AdaGrad over the full 200 epochs.
+SGD + Nesterov converged more slowly than Adam/AdaGrad early, but remained competitive.
+AdaDelta improved steadily but stayed above Adam, AdaGrad, and SGD.
+RMSProp plateaued early with the selected learning rate and performed the worst in this run.
+This differs from the original paper, where Adam clearly outperforms the other first-order methods in Figure 2(a).
+
+#### Interpretation
+
+The corrected Adam implementation appears to be functioning much more plausibly than the initial version, but the reproduction is still not identical to the paper. The main remaining discrepancy is that AdaGrad outperforms Adam at the end of the 200-epoch run.
+My current best hypotheses are:
+
+1. The hyperparameter probe was too short.
+   Adam was selected based on 15-epoch performance, where alpha=0.0003 beat AdaGrad. However, the full experiment is 200 epochs. AdaGrad’s cumulative squared-gradient accumulator naturally anneals its effective learning rate over time, which may explain why it continues improving while Adam plateaus.
+
+2. Dropout + ReLU creates sparse/noisy gradients.
+   AdaGrad is particularly strong in sparse-gradient settings. With ReLU activations and dropout, many units receive zeroed or intermittent gradients, which may make this implementation especially favorable to AdaGrad.
 
 ### Figure 3: CIFAR-10 CNN
 
@@ -54,11 +117,13 @@ _In progress_
 ## File Structure
 
 ```
+
 adam-recreation/
-├── optimizers.py     # Adam, AdaGrad, SGD_Nesterov classes
-├── train.py          # Training loop, data loading, helpers
-├── experiments.py    # Experiment calls and plots
-└── assets/           # Output figures
+├── optimizers.py # Adam, AdaGrad, SGD_Nesterov classes
+├── train.py # Training loop, data loading, helpers
+├── experiments.py # Experiment calls and plots
+└── assets/ # Output figures
+
 ```
 
 ## Usage
