@@ -1,10 +1,13 @@
 import numpy as np
 
 from optimizers import Adam, AdaGrad, SGD_Nesterov, AdaDelta, RMSProp
-from train import train, load_MNIST
+from train import train, load_MNIST, load_CIFAR10
 from utils import one_hot, pack, unpack, plot_results
 from logreg import log_reg_backward, log_reg_forward
 from mlp import reseed, mlp_backward, mlp_forward
+
+def CIFAR_CNN(optimizer_fn, epochs, inputs, labels):
+    pass
 
 def gradcheck(eps):
     rng = np.random.default_rng(seed=0)
@@ -85,6 +88,7 @@ def MNIST_log_reg(optimizer_fn, epochs, inputs, labels):
 
 if __name__ == "__main__":
     inputs, labels = load_MNIST()
+    cifar_inputs, cifar_labels = load_CIFAR10()
 
     epochs = 200
     stepsize = 0.001 # default stepsize from original paper
@@ -95,8 +99,6 @@ if __name__ == "__main__":
     adagrad_alpha_best = 0.01
     adam_alpha_best = 0.0003
     rms_alpha_best = 3e-4
-
-    gradcheck(1e-5)
 
 # #------Probe: RMSProp learning rate grid (15 epochs)------------------------------------------
     # rmsprop_grid = [1e-4, 3e-4, 1e-3, 3e-3]
@@ -197,48 +199,50 @@ if __name__ == "__main__":
 
 #-----Experiment: Multi-layer Perceptron (MLP)---------------------------------------------------
     
-    MNIST_MLP_Adam = MNIST_MLP(
-        lambda w: Adam(adam_alpha_best, w, decay_1, decay_2, ζ),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_adam.npy', np.array(MNIST_MLP_Adam))
+    # gradcheck(1e-5)
 
-    MNIST_MLP_AdaGrad = MNIST_MLP(
-        lambda w: AdaGrad(adagrad_alpha_best, w, ζ),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_adagrad.npy', np.array(MNIST_MLP_AdaGrad))
+    # MNIST_MLP_Adam = MNIST_MLP(
+    #     lambda w: Adam(adam_alpha_best, w, decay_1, decay_2, ζ),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_adam.npy', np.array(MNIST_MLP_Adam))
 
-    MNIST_MLP_SGD_Nesterov = MNIST_MLP(
-        lambda w: SGD_Nesterov(sgd_alpha_best, w, decay_1),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_sgd.npy', np.array(MNIST_MLP_SGD_Nesterov))
+    # MNIST_MLP_AdaGrad = MNIST_MLP(
+    #     lambda w: AdaGrad(adagrad_alpha_best, w, ζ),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_adagrad.npy', np.array(MNIST_MLP_AdaGrad))
 
-    MNIST_MLP_RMSProp = MNIST_MLP(
-        lambda w: RMSProp(rms_alpha_best, w, decay_1, ζ),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_rms.npy', np.array(MNIST_MLP_RMSProp))
+    # MNIST_MLP_SGD_Nesterov = MNIST_MLP(
+    #     lambda w: SGD_Nesterov(sgd_alpha_best, w, decay_1),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_sgd.npy', np.array(MNIST_MLP_SGD_Nesterov))
 
-    MNIST_MLP_AdaDelta = MNIST_MLP(
-        lambda w: AdaDelta(w, 0.95, 1e-6, 1.0),
-        epochs, inputs, labels
-    )
-    np.save('history_mlp_adadelta.npy', np.array(MNIST_MLP_AdaDelta))
+    # MNIST_MLP_RMSProp = MNIST_MLP(
+    #     lambda w: RMSProp(rms_alpha_best, w, decay_1, ζ),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_rms.npy', np.array(MNIST_MLP_RMSProp))
 
-    plot_results(
-        [
-            (MNIST_MLP_Adam,         'Adam'),
-            (MNIST_MLP_AdaGrad,      'AdaGrad'),
-            (MNIST_MLP_SGD_Nesterov, 'SGD + Nesterov'),
-            (MNIST_MLP_AdaDelta, 'AdaDelta'),
-            (MNIST_MLP_RMSProp, 'RMSProp')
-        ],
-        'MNIST MLP + Dropout — Figure 2(a) Recreation',
-        'iterations over entire dataset',
-        'training cost'
-    )
+    # MNIST_MLP_AdaDelta = MNIST_MLP(
+    #     lambda w: AdaDelta(w, 0.95, 1e-6, 1.0),
+    #     epochs, inputs, labels
+    # )
+    # np.save('history_mlp_adadelta.npy', np.array(MNIST_MLP_AdaDelta))
+
+    # plot_results(
+    #     [
+    #         (MNIST_MLP_Adam,         'Adam'),
+    #         (MNIST_MLP_AdaGrad,      'AdaGrad'),
+    #         (MNIST_MLP_SGD_Nesterov, 'SGD + Nesterov'),
+    #         (MNIST_MLP_AdaDelta, 'AdaDelta'),
+    #         (MNIST_MLP_RMSProp, 'RMSProp')
+    #     ],
+    #     'MNIST MLP + Dropout — Figure 2(a) Recreation',
+    #     'iterations over entire dataset',
+    #     'training cost'
+    # )
 
 #-----Experiment: Logistic Regression------------------------------------------------------------
  

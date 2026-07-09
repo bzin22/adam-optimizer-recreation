@@ -49,6 +49,23 @@ def train(backwards_fn, params, optimizer, inputs, labels, epochs, batch_size=12
         
     return history
 
+def load_CIFAR10():
+    """
+    Load MNIST data and convert to numpy arrays
+    """
+
+    train_dataset = datasets.CIFAR10(
+        root='./data',
+        train=True,
+        download=True
+    )
+
+    train_images = train_dataset.data.astype(np.float32) / 255
+    train_images = np.transpose(train_images, (0,3,1,2))
+    train_labels = one_hot(10, np.array(train_dataset.targets))
+
+    return train_images, train_labels
+
 def load_MNIST():
     """
     Load MNIST data and convert to numpy arrays
