@@ -1,0 +1,487 @@
+{
+  "selection": "lowest mean loss at epochs 181-200; ties: epoch 200, then lower rate",
+  "selected": {
+    "adam": {
+      "config": {
+        "id": "adam_lr9e-05",
+        "optimizer": "adam",
+        "learning_rate": 9e-05,
+        "multiplier": 0.3,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.011056587737271821,
+      "final_loss": 0.011675746063114667,
+      "training_seconds": 4227.251580039272,
+      "history_sha256": "35d9d62e579941134d90cdd6ef99651b1ca07bfc7a95a92c445deb6e5572a44d",
+      "at_grid_boundary": false
+    },
+    "adagrad": {
+      "config": {
+        "id": "adagrad_lr0.01",
+        "optimizer": "adagrad",
+        "learning_rate": 0.01,
+        "multiplier": 1,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.013596164170931771,
+      "final_loss": 0.013831257818127789,
+      "training_seconds": 4904.831461614696,
+      "history_sha256": "7d4241fb60e6bb171757627dd1520e070f9acd0beb32f5990ed988f416227127",
+      "at_grid_boundary": false
+    }
+  },
+  "trials": [
+    {
+      "config": {
+        "id": "adam_lr0.0003",
+        "optimizer": "adam",
+        "learning_rate": 0.0003,
+        "multiplier": 1,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.017838587130622082,
+      "final_loss": 0.019042965266234568,
+      "training_seconds": 6902.189168663375,
+      "history_sha256": "6c1e12eeecd87d568ba8879f26c440d585c79af702c6788c37aecda7de1711da"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.01",
+        "optimizer": "adagrad",
+        "learning_rate": 0.01,
+        "multiplier": 1,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.013596164170931771,
+      "final_loss": 0.013831257818127789,
+      "training_seconds": 4904.831461614696,
+      "history_sha256": "7d4241fb60e6bb171757627dd1520e070f9acd0beb32f5990ed988f416227127",
+      "at_grid_boundary": false
+    },
+    {
+      "config": {
+        "id": "adam_lr3e-05",
+        "optimizer": "adam",
+        "learning_rate": 3e-05,
+        "multiplier": 0.1,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.01922289402388035,
+      "final_loss": 0.019086395206249083,
+      "training_seconds": 5534.461526039115,
+      "history_sha256": "33953da4bfffae9be92f9449ff2e7cfa7a58725e7d8d06984de9c42def8970ef"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.001",
+        "optimizer": "adagrad",
+        "learning_rate": 0.001,
+        "multiplier": 0.1,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.08346732852908786,
+      "final_loss": 0.08276693610542729,
+      "training_seconds": 3479.54556887754,
+      "history_sha256": "3d370d39f18b4f623889ea55ef445b62d5febf6e12b6e6e553f0af2cd27f4a7b"
+    },
+    {
+      "config": {
+        "id": "adam_lr4.5e-05",
+        "optimizer": "adam",
+        "learning_rate": 4.5e-05,
+        "multiplier": 0.15,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.014085282796649695,
+      "final_loss": 0.014518301394365468,
+      "training_seconds": 4242.185617835203,
+      "history_sha256": "b8426111b94fa2aafd56a009dec2a75e2b0d881e7c6d021b3e80d9f629770b79"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.0015",
+        "optimizer": "adagrad",
+        "learning_rate": 0.0015,
+        "multiplier": 0.15,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.05872318365075431,
+      "final_loss": 0.05788989716882641,
+      "training_seconds": 3296.7496651749243,
+      "history_sha256": "f6a0fc24da03a913a4478472c48c917e602f441eaeb03210d3af81c5797ee400"
+    },
+    {
+      "config": {
+        "id": "adam_lr6e-05",
+        "optimizer": "adam",
+        "learning_rate": 6e-05,
+        "multiplier": 0.2,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.012184377154643109,
+      "final_loss": 0.012255221541854357,
+      "training_seconds": 4249.35510804184,
+      "history_sha256": "6acefc9b20029ecfb95b329ad53c8fb2e841b89b9a24c73c55eb2cb8ab69f102"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.002",
+        "optimizer": "adagrad",
+        "learning_rate": 0.002,
+        "multiplier": 0.2,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.044756904203882376,
+      "final_loss": 0.04339915130603213,
+      "training_seconds": 3284.0739856225555,
+      "history_sha256": "32fd3b3c76dec284c75a6e4cb94fb6d4d5b27f8d3c6d1788fa4ca416e6279401"
+    },
+    {
+      "config": {
+        "id": "adam_lr9e-05",
+        "optimizer": "adam",
+        "learning_rate": 9e-05,
+        "multiplier": 0.3,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.011056587737271821,
+      "final_loss": 0.011675746063114667,
+      "training_seconds": 4227.251580039272,
+      "history_sha256": "35d9d62e579941134d90cdd6ef99651b1ca07bfc7a95a92c445deb6e5572a44d",
+      "at_grid_boundary": false
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.003",
+        "optimizer": "adagrad",
+        "learning_rate": 0.003,
+        "multiplier": 0.3,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.029200677575313826,
+      "final_loss": 0.02795399795041672,
+      "training_seconds": 3256.593297292129,
+      "history_sha256": "893f0ce9ebf08d218f7854d24a6c8e8ae02c7cd04500482fa79fc749e82a66f3"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.00015",
+        "optimizer": "adam",
+        "learning_rate": 0.00015,
+        "multiplier": 0.5,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.011790436079886581,
+      "final_loss": 0.012837921405297542,
+      "training_seconds": 4225.506893453421,
+      "history_sha256": "4986fbef990e1f03267d6601227c9a2ccc0fb93bc345e849ecb7701d9169fa65"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.005",
+        "optimizer": "adagrad",
+        "learning_rate": 0.005,
+        "multiplier": 0.5,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.017920091453329484,
+      "final_loss": 0.01701658926546033,
+      "training_seconds": 3325.8145061710384,
+      "history_sha256": "c21d0939b409bf081d103c84bb676413c9f4e694088071464ff398b1c3c556f7"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.00021",
+        "optimizer": "adam",
+        "learning_rate": 0.00021,
+        "multiplier": 0.7,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.013804772544478159,
+      "final_loss": 0.012467685598886271,
+      "training_seconds": 5274.08538624394,
+      "history_sha256": "0c42f8965626bf5d95db6d4a557b2c372cd4c0adbd6983699f4887392697f3bd"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.007",
+        "optimizer": "adagrad",
+        "learning_rate": 0.007,
+        "multiplier": 0.7,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.014499329899575414,
+      "final_loss": 0.013733935711046086,
+      "training_seconds": 4871.0456101243035,
+      "history_sha256": "a45fcd337cc0df1da2fdf9b98ab7c8b841af53e433bbba1820b2b29e4d9e40fb"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.00045",
+        "optimizer": "adam",
+        "learning_rate": 0.00045,
+        "multiplier": 1.5,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.026997945636205316,
+      "final_loss": 0.02604518468082353,
+      "training_seconds": 5695.951783873024,
+      "history_sha256": "e0afc3a3938ab6dd6bd0d16ba3fb450aca9a59551ffa1ab32b00e41b9f37c987"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.015",
+        "optimizer": "adagrad",
+        "learning_rate": 0.015,
+        "multiplier": 1.5,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.016161280679265803,
+      "final_loss": 0.015501964507463262,
+      "training_seconds": 4573.724079331616,
+      "history_sha256": "7400022c5e7c234cdf9056ac2884b8c126c0b3ce715cebf313cb90690fa67c3b"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.0006",
+        "optimizer": "adam",
+        "learning_rate": 0.0006,
+        "multiplier": 2,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.0391337824893389,
+      "final_loss": 0.039452847542429906,
+      "training_seconds": 5609.25116858969,
+      "history_sha256": "7638da5b58c23b5ee8ec3e79e4f97264d7fbb59d0d5f23478ee125fa2783f687"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.02",
+        "optimizer": "adagrad",
+        "learning_rate": 0.02,
+        "multiplier": 2,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.02100969756014734,
+      "final_loss": 0.020069966387351795,
+      "training_seconds": 4472.464182831754,
+      "history_sha256": "313317ae040d17fae82ddc2eda290c590288ceca8d8c582941d3e6a792ccffa0"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.0009",
+        "optimizer": "adam",
+        "learning_rate": 0.0009,
+        "multiplier": 3,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.06257180902343658,
+      "final_loss": 0.060642067267594225,
+      "training_seconds": 5619.00328917196,
+      "history_sha256": "877338a10372dd3fdee3d7d46119d0558c75e7b3a480495108afb5b2b3d8528f"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.03",
+        "optimizer": "adagrad",
+        "learning_rate": 0.03,
+        "multiplier": 3,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.02988235773795859,
+      "final_loss": 0.028107308003344957,
+      "training_seconds": 5013.148415422707,
+      "history_sha256": "50463bceb47f7b782c1e1941b23dda722f12f298adeb9a44245fa105aa9f15ac"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.0015",
+        "optimizer": "adam",
+        "learning_rate": 0.0015,
+        "multiplier": 5,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.09412453982620975,
+      "final_loss": 0.09635326259273422,
+      "training_seconds": 6671.437821130385,
+      "history_sha256": "71370a82357e1051c2ee91bb94a46fc9dc84c07a005bfb4933871098630b10a5"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.05",
+        "optimizer": "adagrad",
+        "learning_rate": 0.05,
+        "multiplier": 5,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.05527475181955015,
+      "final_loss": 0.053221881123593474,
+      "training_seconds": 5242.600199411216,
+      "history_sha256": "2b4457977e0c9ad94489d54eb9c9c23bcdb8651eea7f46221ab99abf2df5a484"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.0021",
+        "optimizer": "adam",
+        "learning_rate": 0.0021,
+        "multiplier": 7,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.12882788947694498,
+      "final_loss": 0.1319680028976941,
+      "training_seconds": 5105.069464748667,
+      "history_sha256": "ab28f032630afc821d825f208a03d406f73bddfe10ff0c2889e5dd59eefa9b31"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.07",
+        "optimizer": "adagrad",
+        "learning_rate": 0.07,
+        "multiplier": 7,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.08698847076245006,
+      "final_loss": 0.08262740283396074,
+      "training_seconds": 2891.348629003507,
+      "history_sha256": "5ea1fe749e5bcb94d7589fb10b6691ee35e27e993a21410f70012343ca8fc6c9"
+    },
+    {
+      "config": {
+        "id": "adam_lr0.003",
+        "optimizer": "adam",
+        "learning_rate": 0.003,
+        "multiplier": 10,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.18138433226977121,
+      "final_loss": 0.18340925203901356,
+      "training_seconds": 3748.6519245334785,
+      "history_sha256": "27cecc39e76f66864d0af368e4c0be7d0041104a5b7c306060a671c03103b3bd"
+    },
+    {
+      "config": {
+        "id": "adagrad_lr0.1",
+        "optimizer": "adagrad",
+        "learning_rate": 0.1,
+        "multiplier": 10,
+        "epochs": 200,
+        "seed": 0,
+        "batch_size": 128
+      },
+      "status": "completed",
+      "epochs": 200,
+      "mean_last20": 0.14566881645080154,
+      "final_loss": 0.14315393454758407,
+      "training_seconds": 2853.6809906968265,
+      "history_sha256": "96a11134288894865c45c4adca8082c4e8b24ee91b53841875771a0f4b2184d5"
+    }
+  ]
+}

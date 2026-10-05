@@ -1,0 +1,17 @@
+{
+  "config": {
+    "id": "adam_lr0.00015",
+    "optimizer": "adam",
+    "learning_rate": 0.00015,
+    "multiplier": 0.5,
+    "epochs": 200,
+    "seed": 0,
+    "batch_size": 128
+  },
+  "status": "completed",
+  "epochs": 200,
+  "mean_last20": 0.011790436079886581,
+  "final_loss": 0.012837921405297542,
+  "training_seconds": 4225.506893453421,
+  "history_sha256": "4986fbef990e1f03267d6601227c9a2ccc0fb93bc345e849ecb7701d9169fa65"
+}

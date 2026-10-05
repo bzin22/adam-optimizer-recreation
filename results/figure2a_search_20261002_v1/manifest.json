@@ -1,0 +1,293 @@
+{
+  "created_at": "2026-10-03T02:28:30.626211+00:00",
+  "repo": "/Users/bzin/6.036-intro-to-ML/adam_recreation",
+  "run_dir": "/Users/bzin/6.036-intro-to-ML/adam_recreation/results/figure2a_search_20261002_v1",
+  "scratch": "/Users/bzin/6.036-intro-to-ML/adam_recreation/.local-runs/figure2a_search_20261002_v1",
+  "data_root": "/Users/bzin/6.036-intro-to-ML/adam_recreation/data/MNIST/raw",
+  "data_sha256": {
+    "train-images-idx3-ubyte": "ba891046e6505d7aadcbbe25680a0738ad16aec93bde7f9b65e87a2fc25776db",
+    "train-labels-idx1-ubyte": "65a50cbbf4e906d70832878ad85ccda5333a97f0f4c3dd2ef09a8a9eef7101c5"
+  },
+  "source_sha256": {
+    "figure2a_search.py": "64e24398723f2b6f5cc98c2fa14636ae072f9324d616feda7b00fafe0f39247f",
+    "mlp.py": "0264a17c5bb2156ebd43a973ad07ec7f59f5a4128845b9b61d9bbd437b3c2580",
+    "optimizers.py": "3dd3705d463b1fd3f7b9c2a1a157a93d959ad7b101ee3034a0cdd5fad16fdec4",
+    "utils.py": "931b9af46266a03e8371a88396644daa2bace753bb2eba0650cc751585c8ba7b",
+    "train.py": "411b873c6c21ae7b4da0fdd68bd736174d3ff241536b5fd8da82477733a856e7",
+    "experiments.py": "13abbe3b0607cd163d83fd57a9ab993b2040ceb622f8ff51068aedd173ff6489",
+    "logreg.py": "bfa3446e835eb9b50f69b366fc7661c3e5a0b6b9830c53f7e2cb0f49ab029dee",
+    "cnn.py": "54a9a6bc1bc15cb40c51fb303ee9dbdb5b981e21d2e2a026f3cd89de07c0357d",
+    "vae.py": "b93abea85fdd1c1e3af15a63de7ff231b13b6f8099eb357e065a1d2433355fd5"
+  },
+  "baseline": {
+    "adam": {
+      "path": "/Users/bzin/6.036-intro-to-ML/history_mlp_adam.npy",
+      "sha256": "6c1e12eeecd87d568ba8879f26c440d585c79af702c6788c37aecda7de1711da"
+    },
+    "adagrad": {
+      "path": "/Users/bzin/6.036-intro-to-ML/history_mlp_adagrad.npy",
+      "sha256": "7d4241fb60e6bb171757627dd1520e070f9acd0beb32f5990ed988f416227127"
+    },
+    "sgd": {
+      "path": "/Users/bzin/6.036-intro-to-ML/history_mlp_sgd.npy",
+      "sha256": "100ba6d7d95b05924273539d524d5c41804bb79b820b0c3ce42df0bb6b363769"
+    },
+    "rms": {
+      "path": "/Users/bzin/6.036-intro-to-ML/history_mlp_rms.npy",
+      "sha256": "64dbdc173ca91367eb1386de126e13a93abddcf354ee64cc8679d9e9b4b55657"
+    },
+    "adadelta": {
+      "path": "/Users/bzin/6.036-intro-to-ML/history_mlp_adadelta.npy",
+      "sha256": "5457232718ff996f3f51d3f0a8d73cb7b231e54f4c7f618a12c08b1d42a55f76"
+    }
+  },
+  "original_figure": {
+    "path": "/Users/bzin/6.036-intro-to-ML/adam_recreation/assets/figure_2_recreation.png",
+    "sha256": "2e35411b12f2c99a081bc798599af2773e5ff99f5c689ec505b0c047802ed1ef"
+  },
+  "python": "3.11.15 (main, Mar 11 2026, 17:14:47) [Clang 20.1.8 ]",
+  "numpy": "1.26.4",
+  "threads": 4,
+  "dropout": {
+    "input_drop_probability": 0.2,
+    "hidden_drop_probability": 0.5
+  },
+  "selection": "lowest mean loss at epochs 181-200; ties: epoch 200, then lower rate",
+  "trials": [
+    {
+      "id": "adam_lr0.0003",
+      "optimizer": "adam",
+      "learning_rate": 0.0003,
+      "multiplier": 1,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.01",
+      "optimizer": "adagrad",
+      "learning_rate": 0.01,
+      "multiplier": 1,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr3e-05",
+      "optimizer": "adam",
+      "learning_rate": 3e-05,
+      "multiplier": 0.1,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.001",
+      "optimizer": "adagrad",
+      "learning_rate": 0.001,
+      "multiplier": 0.1,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr4.5e-05",
+      "optimizer": "adam",
+      "learning_rate": 4.5e-05,
+      "multiplier": 0.15,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.0015",
+      "optimizer": "adagrad",
+      "learning_rate": 0.0015,
+      "multiplier": 0.15,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr6e-05",
+      "optimizer": "adam",
+      "learning_rate": 6e-05,
+      "multiplier": 0.2,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.002",
+      "optimizer": "adagrad",
+      "learning_rate": 0.002,
+      "multiplier": 0.2,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr9e-05",
+      "optimizer": "adam",
+      "learning_rate": 9e-05,
+      "multiplier": 0.3,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.003",
+      "optimizer": "adagrad",
+      "learning_rate": 0.003,
+      "multiplier": 0.3,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.00015",
+      "optimizer": "adam",
+      "learning_rate": 0.00015,
+      "multiplier": 0.5,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.005",
+      "optimizer": "adagrad",
+      "learning_rate": 0.005,
+      "multiplier": 0.5,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.00021",
+      "optimizer": "adam",
+      "learning_rate": 0.00021,
+      "multiplier": 0.7,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.007",
+      "optimizer": "adagrad",
+      "learning_rate": 0.007,
+      "multiplier": 0.7,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.00045",
+      "optimizer": "adam",
+      "learning_rate": 0.00045,
+      "multiplier": 1.5,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.015",
+      "optimizer": "adagrad",
+      "learning_rate": 0.015,
+      "multiplier": 1.5,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.0006",
+      "optimizer": "adam",
+      "learning_rate": 0.0006,
+      "multiplier": 2,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.02",
+      "optimizer": "adagrad",
+      "learning_rate": 0.02,
+      "multiplier": 2,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.0009",
+      "optimizer": "adam",
+      "learning_rate": 0.0009,
+      "multiplier": 3,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.03",
+      "optimizer": "adagrad",
+      "learning_rate": 0.03,
+      "multiplier": 3,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.0015",
+      "optimizer": "adam",
+      "learning_rate": 0.0015,
+      "multiplier": 5,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.05",
+      "optimizer": "adagrad",
+      "learning_rate": 0.05,
+      "multiplier": 5,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.0021",
+      "optimizer": "adam",
+      "learning_rate": 0.0021,
+      "multiplier": 7,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.07",
+      "optimizer": "adagrad",
+      "learning_rate": 0.07,
+      "multiplier": 7,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adam_lr0.003",
+      "optimizer": "adam",
+      "learning_rate": 0.003,
+      "multiplier": 10,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    },
+    {
+      "id": "adagrad_lr0.1",
+      "optimizer": "adagrad",
+      "learning_rate": 0.1,
+      "multiplier": 10,
+      "epochs": 200,
+      "seed": 0,
+      "batch_size": 128
+    }
+  ],
+  "original_state": " M .gitignore\n M cnn.py\n M experiments.py\n M mlp.py\n M optimizers.py\n M train.py\n M utils.py\n?? .lavish/\n?? FIGURE2A_SEARCH.md\n?? assets/figure_3_recreation.png\n?? assets/figure_4_recreation.png\n?? figure2a_search.py\n?? results/\n?? test_figure2a_search.py\n?? vae.py\n"
+}

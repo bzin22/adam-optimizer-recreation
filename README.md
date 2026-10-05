@@ -6,16 +6,10 @@ NumPy recreation of **"Adam: A Method for Stochastic Optimization"** (Kingma & B
 
 This project implements Adam, AdaGrad, and SGD with Nesterov momentum from scratch in NumPy and reproduces the experiments from the original paper. No PyTorch autograd — all forward passes, backward passes, and optimizer update rules are hand-coded.
 
-#### Interpretation
-
-The corrected Adam implementation appears to be functioning much more plausibly than the initial version, but the reproduction is still not identical to the paper. The main remaining discrepancy is that AdaGrad outperforms Adam at the end of the 200-epoch run.
-My current best hypotheses are:
-
-1. The hyperparameter probe was too short.
-   Adam was selected based on 15-epoch performance, where alpha=0.0003 beat AdaGrad. However, the full experiment is 200 epochs. AdaGrad’s cumulative squared-gradient accumulator naturally anneals its effective learning rate over time, which may explain why it continues improving while Adam plateaus.
-
-2. Dropout + ReLU creates sparse/noisy gradients.
-   AdaGrad is particularly strong in sparse-gradient settings. With ReLU activations and dropout, many units receive zeroed or intermittent gradients, which may make this implementation especially favorable to AdaGrad.
+The completed Figure 2(a) learning-rate search evaluates Adam and AdaGrad over
+200 epochs per trial. Adam at learning rate **0.00009** achieves a mean training
+loss of **0.01106** over the final 20 epochs, compared with **0.01360** for AdaGrad
+at **0.01**. This reverses their ordering in the earlier 15-epoch-tuned recreation.
 
 ## Architecture
 
@@ -58,7 +52,7 @@ Implemented optimizers:
 - RMSProp
 - AdaDelta
 
-#### Hyperparameter probes
+#### Original 15-epoch hyperparameter probes
 
 Before running the full 200-epoch experiment, I ran 15-epoch probes to select learning rates:
 
@@ -84,7 +78,7 @@ RMSProp alpha=0.001:  0.1899
 RMSProp alpha=0.003:  0.4719
 ```
 
-#### Selected Settings
+#### Original settings
 
 Adam: alpha = 0.0003, beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8
 AdaGrad: alpha = 0.01, epsilon = 1e-8
@@ -92,28 +86,47 @@ SGD+Nesterov: alpha = 0.03, momentum = 0.9
 RMSProp: alpha = 0.0003, decay = 0.9, epsilon = 1e-8
 AdaDelta: rho = 0.95, epsilon = 1e-6, alpha = 1.0
 
-### Results
+#### Completed 200-epoch learning-rate search
 
-![Figure 2 Recreation](assets/figure_2_recreation.png)
+Completed October 4, 2026: **26 of 26 trials**, each trained for **200 epochs**,
+with no failed trials. Only Adam and AdaGrad were searched, using 13 learning
+rates each and seed 0. Every trial resets the model, optimizer, and random state.
 
-The full 200-epoch run produced the following qualitative ordering:
-AdaGrad reached the lowest final training loss.
-Adam was highly competitive early, but plateaued above AdaGrad over the full 200 epochs.
-SGD + Nesterov converged more slowly than Adam/AdaGrad early, but remained competitive.
-AdaDelta improved steadily but stayed above Adam, AdaGrad, and SGD.
-RMSProp plateaued early with the selected learning rate and performed the worst in this run.
-This differs from the original paper, where Adam clearly outperforms the other first-order methods in Figure 2(a).
+The grid multiplies Adam's original learning rate of `0.0003` and AdaGrad's
+`0.01` by `[0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 3, 5, 7, 10]`.
+Each optimizer is selected independently by its lowest **mean training loss over
+epochs 181–200**, with epoch-200 loss and then lower learning rate breaking ties.
+Neither selected rate is at a grid boundary.
 
-#### Interpretation
+The architecture remains two 1000-unit ReLU hidden layers, with batch size 128,
+20% input dropout, and 50% hidden dropout. Adam keeps `beta1=0.9`, `beta2=0.999`,
+and `epsilon=1e-8`; AdaGrad keeps `epsilon=1e-8`. Only learning rates change.
 
-The corrected Adam implementation appears to be functioning much more plausibly than the initial version, but the reproduction is still not identical to the paper. The main remaining discrepancy is that AdaGrad outperforms Adam at the end of the 200-epoch run.
-My current best hypotheses are:
+| Optimizer | Selected learning rate | Mean loss, epochs 181–200 | Epoch-200 loss |
+|---|---:|---:|---:|
+| Adam | **0.00009** | **0.011057** | **0.011676** |
+| AdaGrad | **0.01** | **0.013596** | **0.013831** |
 
-1. The hyperparameter probe was too short.
-   Adam was selected based on 15-epoch performance, where alpha=0.0003 beat AdaGrad. However, the full experiment is 200 epochs. AdaGrad’s cumulative squared-gradient accumulator naturally anneals its effective learning rate over time, which may explain why it continues improving while Adam plateaus.
+![Figure 2(a), completed Adam and AdaGrad search](assets/figure_2_recreation_tuned_v1.png)
 
-2. Dropout + ReLU creates sparse/noisy gradients.
-   AdaGrad is particularly strong in sparse-gradient settings. With ReLU activations and dropout, many units receive zeroed or intermittent gradients, which may make this implementation especially favorable to AdaGrad.
+Adam's selected trial has **18.7% lower final-20-epoch mean loss than AdaGrad**
+and 38.0% lower than the original Adam trial at `0.0003` (mean loss `0.017839`).
+AdaGrad's original rate remains its best. The SGD+Nesterov, RMSProp, and AdaDelta
+curves use their original 200-epoch histories, verified byte-for-byte unchanged;
+those optimizers were not searched again.
+
+This supports the conclusion that selecting Adam's learning rate using only
+15 epochs was insufficient for this 200-epoch objective. The result is closer
+to the paper's late-training ordering, but does not establish an exact
+reproduction: Adam is still slower early in this run, the search uses one seed,
+and only learning rates for two optimizers were retuned. The retained dropout
+rates are implementation choices, not verified settings from the Adam paper.
+
+The [original chart](assets/figure_2_recreation.png), where AdaGrad finishes below
+Adam, is preserved. See the [search records](results/figure2a_search_20261002_v1/search_results.json)
+for all 26 trials and [artifact guide](FIGURE2A_SEARCH.md) for histories, frozen
+source, and verification details. Running `experiments.py` uses the existing
+experiment defaults; this chart comes from the archived search.
 
 ### Figure 3: CIFAR-10 CNN
 
