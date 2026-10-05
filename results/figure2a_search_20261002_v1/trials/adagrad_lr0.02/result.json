@@ -1,0 +1,17 @@
+{
+  "config": {
+    "id": "adagrad_lr0.02",
+    "optimizer": "adagrad",
+    "learning_rate": 0.02,
+    "multiplier": 2,
+    "epochs": 200,
+    "seed": 0,
+    "batch_size": 128
+  },
+  "status": "completed",
+  "epochs": 200,
+  "mean_last20": 0.02100969756014734,
+  "final_loss": 0.020069966387351795,
+  "training_seconds": 4472.464182831754,
+  "history_sha256": "313317ae040d17fae82ddc2eda290c590288ceca8d8c582941d3e6a792ccffa0"
+}

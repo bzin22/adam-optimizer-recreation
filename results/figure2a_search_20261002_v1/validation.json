@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-03T02:30:28.523079+00:00",
+  "unit_tests": 9,
+  "passed": 9,
+  "command": "python -m unittest -v test_figure2a_search",
+  "test_source_sha256": "1b48fd6dc34754bd1e99f1566aed1946d719275b2410192a2674429b37153b1a",
+  "plot_layout_inspected": true,
+  "source_matches_frozen": true,
+  "real_interruption": "Launcher migration after epoch 2; both locks released; resumed from epoch checkpoint",
+  "interruption_notification_returncode": 0,
+  "live_adam_first_five_epochs_match_original_exactly": true,
+  "live_resume_from_epoch_2_verified": true
+}

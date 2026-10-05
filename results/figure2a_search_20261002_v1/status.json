@@ -1,0 +1,12 @@
+{
+  "state": "completed",
+  "pid": 6963,
+  "updated_at": "2026-10-04T11:27:20.387532+00:00",
+  "completed": 26,
+  "failed": 0,
+  "figure": "/Users/bzin/6.036-intro-to-ML/adam_recreation/assets/figure_2_recreation_tuned_v1.png",
+  "selected": {
+    "adam": 9e-05,
+    "adagrad": 0.01
+  }
+}
