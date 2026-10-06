@@ -87,24 +87,31 @@ class SGD_Nesterov:
         return self.weights
          
 class Adam:
-    def __init__(self, stepsize, weights, decay_1, decay_2, epsilon):
+    def __init__(self, stepsize, weights, decay_1, decay_2, epsilon, bias_correction=True):
         self.stepsize = stepsize
         self.weights = weights
         self.decay_1 = decay_1
         self.decay_2 = decay_2
         self.epsilon = epsilon
+        self.bias_correction = bias_correction
 
         self.m_t, self.v_t = np.zeros_like(weights), np.zeros_like(weights)
         self.t = 0
 
     def update(self, grad):
-        self.t += 1 
+        self.t += 1
 
         self.m_t = self.decay_1 * self.m_t + (1 - self.decay_1) * grad
         self.v_t = self.decay_2 * self.v_t + (1 - self.decay_2) * grad**2
 
-        m_hat = self.m_t / (1 - self.decay_1**self.t)
-        v_hat = self.v_t / (1 - self.decay_2**self.t)
+        if self.bias_correction:
+            m_hat = self.m_t / (1 - self.decay_1**self.t)
+            v_hat = self.v_t / (1 - self.decay_2**self.t)
+        else:
+            # Algorithm 1 with the /(1-β1^t) and /(1-β2^t) terms removed. This is the
+            # ablation measured in Figure 4.
+            m_hat = self.m_t
+            v_hat = self.v_t
 
         # step_size_modifier = (1/self.t**0.5)
 
@@ -115,3 +122,41 @@ class Adam:
     # def step_epoch(self):
     #     self.t += 1
     #     return self.t
+
+class AdaMax:
+    """
+    Algorithm 2 from the paper: Adam with the second moment replaced by an
+    exponentially weighted infinity norm.
+
+    Differs from Adam in three ways: u_t is a running max of |g| rather than a
+    running average of g**2, u_t needs no bias correction (it is not an estimate
+    of a moment), and there is no epsilon in the denominator.
+    """
+    def __init__(self, stepsize, weights, decay_1, decay_2, epsilon=1e-8):
+        self.stepsize = stepsize
+        self.weights = weights
+        self.decay_1 = decay_1
+        self.decay_2 = decay_2
+        self.epsilon = epsilon
+
+        self.m_t = np.zeros_like(weights)
+        self.u_t = np.zeros_like(weights)
+        self.t = 0
+
+    def update(self, grad):
+        self.t += 1
+
+        self.m_t = self.decay_1 * self.m_t + (1 - self.decay_1) * grad
+
+        # The paper writes u_t = max(β2·u_{t-1}, |g_t|) with no epsilon. Taken
+        # literally, a coordinate whose gradient is exactly 0 at t=1 gives
+        # u_t = 0 and m_t = 0, so the update is 0/0 and that weight is NaN for
+        # the rest of the run. Dead ReLUs make this common on the first
+        # minibatch. Floor |g| the way torch.optim.Adamax does: it only changes
+        # the degenerate case and leaves the infinity norm intact everywhere else.
+        self.u_t = np.maximum(self.decay_2 * self.u_t, np.abs(grad) + self.epsilon)
+
+        stepsize_t = self.stepsize / (1 - self.decay_1**self.t)
+        self.weights -= stepsize_t * self.m_t / self.u_t
+
+        return self.weights

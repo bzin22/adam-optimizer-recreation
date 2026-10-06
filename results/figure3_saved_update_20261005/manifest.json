@@ -1,0 +1,37 @@
+{
+  "description": "Replot existing 45-epoch histories; only Adam without dropout replaced. No new training.",
+  "series": {
+    "adam": {
+      "source": "history_cifar_adam_a0.0001.npy",
+      "sha256": "b2084157e455f71560efcbc374acab6809e2568912b9de4960df596f22a19469",
+      "learning_rate": 0.0001
+    },
+    "adam_dropout": {
+      "source": "history_cifar_adam_dropout.npy",
+      "sha256": "3f074bdbfeb6ede32697425ea412e5f5e6fc205edbab70a21a6c99e9d75da80e",
+      "learning_rate": 0.0003
+    },
+    "adagrad": {
+      "source": "history_cifar_adagrad.npy",
+      "sha256": "f5ad57a27a065f498e6a4ba187b29c718b61f6cb8151f13f9c9f5567eecc14bd",
+      "learning_rate": 0.003
+    },
+    "adagrad_dropout": {
+      "source": "history_cifar_adagrad_dropout.npy",
+      "sha256": "8e7e9ef94817b36ccfe1fafd48646c0f75edc8acb982b07c3987ecacd7c4c26e",
+      "learning_rate": 0.003
+    },
+    "sgd_nesterov": {
+      "source": "history_cifar_sgd_nesterov.npy",
+      "sha256": "c2b9fb4008ab4bfec5c0c59571a682c74bb65a8318ef9f4c88f798236692b137",
+      "learning_rate": 0.01
+    },
+    "sgd_nesterov_dropout": {
+      "source": "history_cifar_sgd_nesterov_dropout.npy",
+      "sha256": "2eafb391ab15598b3069eceb2f28cf8d98745579a29f60f6d8e4be50faaa286d",
+      "learning_rate": 0.01
+    }
+  },
+  "panel_a": "First three epoch averages, linear y axis; sub-epoch measurements unavailable.",
+  "panel_b": "All 45 epoch averages, logarithmic y axis."
+}

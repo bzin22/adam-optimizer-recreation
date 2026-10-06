@@ -8,28 +8,35 @@ def reseed(seed): # only used for gradcheck, not used in actual experiements
     global _rng
     _rng = np.random.default_rng(seed)
 
-def mlp_forward(params, inputs, training=True):
+def mlp_forward(params, inputs, dropout=True):
+    """
+    dropout=False gives the deterministic cost function used in Figure 2(b).
+    The masks are returned either way; with dropout off they are scalar 1.0, so
+    the backward pass needs no branching.
+    """
     W1, b1, W2, b2, W3, b3  = params
     inputs = inputs.T
 
-    p_keep_input = 0.8 # keep 80% of the inputs 
+    p_keep_input = 0.8 # keep 80% of the inputs
     p_keep_hidden = 0.5 # keep 50% of the hidden layers
 
-    if training:
+    scaled_mask_i = scaled_mask_1 = scaled_mask_2 = 1.0
+
+    if dropout:
         scaled_mask_i = (1/p_keep_input) * (_rng.random(inputs.shape) < p_keep_input).astype(np.float32)
         inputs = inputs * scaled_mask_i
 
     # layer 1
     z1 = np.dot(W1,inputs) + b1
     a1 = relu(z1)
-    if training:
+    if dropout:
         scaled_mask_1 = (1/p_keep_hidden) * (_rng.random(a1.shape) < p_keep_hidden).astype(np.float32)
         a1 *= scaled_mask_1
 
     # layer 2
     z2 = np.dot(W2, a1) + b2
     a2 = relu(z2)
-    if training: 
+    if dropout:
         scaled_mask_2 = (1/p_keep_hidden) * (_rng.random(a2.shape) < p_keep_hidden).astype(np.float32)
         a2 *= scaled_mask_2
 
@@ -37,14 +44,12 @@ def mlp_forward(params, inputs, training=True):
     z3 = np.dot(W3, a2) + b3
     out = softmax(z3)
 
-    if training: 
-        return [a1, a2, out, scaled_mask_i, scaled_mask_1, scaled_mask_2]
-    return [a1, a2, out]
+    return [a1, a2, out, scaled_mask_i, scaled_mask_1, scaled_mask_2]
 
-def mlp_backward(params, inputs, labels, lam):
+def mlp_backward(params, inputs, labels, lam, dropout=True):
     W1, b1, W2, b2, W3, b3  = params
 
-    a1, a2, out, scaled_mask_i, scaled_mask_1, scaled_mask_2 = mlp_forward(params, inputs)
+    a1, a2, out, scaled_mask_i, scaled_mask_1, scaled_mask_2 = mlp_forward(params, inputs, dropout)
     inputs = inputs.T
 
     loss = -np.mean(np.sum(labels * np.log(out + 1e-12), axis=0)) \

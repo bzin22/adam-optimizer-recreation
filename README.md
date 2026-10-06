@@ -4,7 +4,7 @@ NumPy recreation of **"Adam: A Method for Stochastic Optimization"** (Kingma & B
 
 ## Overview
 
-This project implements Adam, AdaGrad, and SGD with Nesterov momentum from scratch in NumPy and reproduces the experiments from the original paper. No PyTorch autograd — all forward passes, backward passes, and optimizer update rules are hand-coded.
+This project implements optimizer updates in NumPy and recreates selected experiments from the original paper. The logistic regression, MLP, and VAE backward passes are hand-coded; the CNN uses PyTorch autograd for gradients and the same NumPy optimizer updates.
 
 The completed Figure 2(a) learning-rate search evaluates Adam and AdaGrad over
 200 epochs per trial. Adam at learning rate **0.00009** achieves a mean training
@@ -23,8 +23,12 @@ experiments; only the model changes per figure.
   Also contains `load_MNIST()`.
 - `logreg.py` — logistic regression `forward` and `loss_and_grads`.
 - `utils.py` — `one_hot`, `pack`/`unpack`, `plot_results`.
-- `experiments.py` — thin runners (`run_figure1`, later `run_figure2`) that wire
-  a model + optimizer into `train()`.
+- `experiments.py` — the single user-facing entry point for experiment settings,
+  runs, and plots. Its bottom section uses commented experiment blocks.
+- `figure2a_search.py` — internal checkpoint/worker helper for the completed search;
+  its grid is defined in `experiments.py`. Frozen run snapshots remain unchanged.
+- `figure3_search.py` — internal checkpoint and supervisor helper for the
+  38-trial CNN search; grids, entry points, and plotting live in `experiments.py`.
 
 Regarding pack/unpack functions in utils.py: optimizers see one 1D vector regardless of the model. `pack([W, b, ...])` concatenates a list of arrays; `unpack(vector, shapes)` inverts it. This means
 the same `Adam` instance handles logreg's 2 arrays (7,850 params) or the MLP's
@@ -34,7 +38,7 @@ the same `Adam` instance handles logreg's 2 arrays (7,850 params) or the MLP's
 
 ### Figure 1: MNIST Logistic Regression
 
-L2-regularized multi-class logistic regression on MNIST (784-dim image vectors, minibatch size 128). Adam's stepsize is annealed by 1/√t per epoch, matching the paper's Section 4 theoretical prediction.
+Historical MNIST logistic-regression chart. The retained baseline runner does not apply the paper's L2 regularization or epoch stepsize decay, and the original numerical histories are unavailable; this chart is not verified as an exact reproduction.
 
 ![Figure 1 Recreation](assets/figure_1_recreation.png)
 
@@ -122,20 +126,48 @@ reproduction: Adam is still slower early in this run, the search uses one seed,
 and only learning rates for two optimizers were retuned. The retained dropout
 rates are implementation choices, not verified settings from the Adam paper.
 
-The [original chart](assets/figure_2_recreation.png), where AdaGrad finishes below
+The [original chart](results/figure2a_search_20261002_v1/baseline/figure_2_recreation.png), where AdaGrad finishes below
 Adam, is preserved. See the [search records](results/figure2a_search_20261002_v1/search_results.json)
 for all 26 trials and [artifact guide](FIGURE2A_SEARCH.md) for histories, frozen
-source, and verification details. Running `experiments.py` uses the existing
-experiment defaults; this chart comes from the archived search.
+source, and verification details. The completed chart comes from the archived search. Its settings and plot entry
+point now live in `experiments.py`; completed run calls are commented out.
 
 ### Figure 3: CIFAR-10 CNN
 
-_In progress_
+The approved **38-trial GPU search started October 5, 2026**: 22 learning-rate
+trials followed by 16 targeted Adam/SGD momentum trials, including AdaGrad
+retuning, with and without dropout. Every stable trial runs 45 epochs under
+master seed 0. Selection uses mean training loss over epochs 41–45.
+See the [protocol](FIGURE3_TUNING_PLAN.md). The in-progress run and its live
+status remain on the training machine; they are not part of this publication.
+On completion, both panels will be replaced with the six selected runs;
+the chart below uses the earlier saved histories until then.
+
+![Figure 3 recreation using the saved Adam follow-up](assets/figure_3_recreation.png)
+
+Both panels use the saved Adam **without dropout** run at learning rate `0.0001`.
+Its epoch-45 loss is **0.005508**, compared with **0.089495** for the previous
+Adam curve at `0.001`. Adam with dropout remains at `0.0003`; all five other
+curves retain their existing histories. Producing this saved-data chart required
+no new training.
+
+Panel (a) shows the first three **epoch averages** on a linear loss axis, not the
+paper's within-epoch trajectory. Panel (b) shows all 45 epoch averages on a
+logarithmic loss axis. The selected Adam run starts more slowly but ends below
+the existing SGD curve; this is not an exact reproduction of the paper.
+
+The [saved chart data and provenance](results/figure3_saved_update_20261005/manifest.json)
+record the six histories used. Regenerate both panels with:
+
+```bash
+# In experiments.py, uncomment plot_figure3(), then:
+python experiments.py
+```
 
 ## Implementation Notes
 
 - **Variable naming** follows the paper exactly: `α=stepsize`, `β1=decay_1`, `β2=decay_2`, `ε=epsilon`, `θ=weights`, `g=grad`, `t=timestep`
-- The `1/√t` stepsize decay applies **per epoch**, not per minibatch step, in experiment 1 (only).
+- The paper uses epoch stepsize decay for logistic regression; the retained historical baseline runner does not implement it.
 - AdaGrad's learning rate already decays naturally via its accumulator; adding `1/√t` on top causes double decay and severely degrades performance
 
 ## File Structure
@@ -159,6 +191,18 @@ adam-recreation/
 pip install numpy matplotlib torch torchvision
 python experiments.py
 ```
+
+All experiment calls are disabled by default. Uncomment the desired block at the
+bottom of `experiments.py`, then run it. No data is loaded and no training begins
+with every block commented. Figure 2(a) and the current saved Figure 3 chart are
+complete; Figure 2(b) and the full Figure 4 comparison remain incomplete.
+Figure 3's approved full-horizon search is described in [FIGURE3_TUNING_PLAN.md](FIGURE3_TUNING_PLAN.md).
+
+The Figure 2(a) and Figure 3 search engines resume saved checkpoints. The other
+training functions require a fresh output directory and do not resume partial
+trials. The Figure 3 search preserves baseline assets and automatically replaces
+its canonical chart after all planned trials have been accounted for and six
+winners selected. Do not launch a second copy while the managed job is running.
 
 ## Reference
 
