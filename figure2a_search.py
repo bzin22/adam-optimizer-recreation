@@ -68,7 +68,7 @@ def read_json(path):
 
 
 def notify(message):
-    """Local macOS notification, explicitly requested by the user. No messages to others."""
+    """Send a local macOS notification."""
     try:
         result = subprocess.run(
             ["/usr/bin/osascript", "-e",

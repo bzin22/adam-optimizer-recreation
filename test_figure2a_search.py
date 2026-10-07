@@ -1,4 +1,4 @@
-"""Meaningful checks for resume, original-loop parity, selection, and preserved curves."""
+"""Checks for resume, original-loop parity, selection, and preserved curves."""
 import copy
 from pathlib import Path
 import pickle

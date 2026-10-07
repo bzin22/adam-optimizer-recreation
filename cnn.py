@@ -1,15 +1,10 @@
 """
 CIFAR-10 ConvNet for Figure 3.
 
-This is the one model in the project that does not hand-code its backward pass.
-Convolution gradients come from torch autograd; every parameter update still goes
-through the NumPy optimizers in optimizers.py. The bridge is make_cnn_backward,
-which matches the backwards_fn contract train() already expects:
+Gradients come from torch autograd; updates use the NumPy optimizers.
+make_cnn_backward implements the train() interface:
 
     backwards_fn(params, inputs, labels, lam) -> (loss, grads)
-
-so the CNN runs through the same pack/unpack/optimizer.update path as logreg and
-the MLP, with no changes to train().
 
 Architecture is the paper's Section 6.3 net: c1 5x5x64, s1 3x3 max pool stride 2,
 c2 5x5x64, s2 pool, c3 5x5x128, s3 pool, then 1000 ReLU units and a 10-way output.
@@ -64,11 +59,11 @@ def cnn_params(model):
 
 def make_cnn_backward(model, device):
     """
-    Closes over the module and returns a function with train()'s signature.
+    Return a backward function with train()'s signature.
 
     Each call writes the optimizer's NumPy parameters into the module, runs one
-    forward/backward, and hands the gradients back as NumPy. The optimizer vector
-    is the source of truth; the module is just the thing that computes gradients.
+    forward/backward pass, and returns NumPy gradients. Parameters are stored
+    in the optimizer vector.
     """
     tensors = list(model.parameters())
     model.to(device)

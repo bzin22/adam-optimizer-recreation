@@ -3,10 +3,11 @@ Recreation of: "Adam: A Method for Stochastic Optimization"
 Kingma & Ba, ICLR 2015
 https://arxiv.org/abs/1412.6980
 
-Author: Bryan Zin
+Original author: Bryan Zin (through commit d2abe01).
+Later extensions include AI-assisted work.
 Date: June 2026
 
-Variable names as they appear in the paper vs in the code: 
+Paper notation and code names:
 
 α: stepsize/learning rate
 β1: decay_1

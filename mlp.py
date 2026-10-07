@@ -4,7 +4,7 @@ from utils import relu, softmax
 
 _rng = np.random.default_rng()
 
-def reseed(seed): # only used for gradcheck, not used in actual experiements
+def reseed(seed): # Reset the dropout RNG for gradient checks and trials.
     global _rng
     _rng = np.random.default_rng(seed)
 

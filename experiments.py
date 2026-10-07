@@ -120,11 +120,10 @@ def gradcheck_vae(eps):
 
 def check_adamax():
     """
-    AdaMax against values that fall straight out of Algorithm 2.
+    Check AdaMax against Algorithm 2 reference values.
 
     At t=1, m_1/(1-β1) = g and u_1 = |g|, so the first step is α·g/|g|, i.e. exactly
-    α in magnitude whatever the gradient is. That is the property the infinity norm
-    buys, so it is the one worth pinning.
+    α in magnitude for every nonzero gradient coordinate.
     """
     decay_1, decay_2 = 0.9, 0.999
 
@@ -155,12 +154,11 @@ def check_adamax():
 
 def check_bias_correction():
     """
-    The Adam(bias_correction=False) switch that Figure 4 measures.
+    Check the bias-correction ablation used in Figure 4.
 
     On step 1 the corrected update is α·g/(|g|+ζ) ≈ α. Drop the correction terms and
     it becomes α·(1-β1)·g / (sqrt((1-β2)·g²)+ζ), so the uncorrected step is larger by
-    (1-β1)/sqrt(1-β2) = 3.1623 at the default decays. That factor is the overshoot
-    Figure 4 is about.
+    (1-β1)/sqrt(1-β2) = 3.1623 at the default decays.
     """
     decay_1, decay_2, ζ = 0.9, 0.999, 1e-8
     grad = np.array([0.7])
@@ -176,7 +174,7 @@ def check_bias_correction():
     print(f"ratio: {ratio:.6f}, expected (1-β1)/sqrt(1-β2): {expected:.6f}")
     assert abs(ratio - expected) < 1e-4, "uncorrected overshoot is the wrong size"
 
-    # The new keyword must not have disturbed the Adam that produced Figures 1 and 2(a).
+    # Check that default Adam updates match the reference values.
     optimizer = Adam(0.001, np.array([1.0, 2.0, 3.0]), decay_1, decay_2, ζ)
     for i in range(10):
         optimizer.update(np.array([0.1, -0.2, 0.3]) * (i + 1))
@@ -186,9 +184,9 @@ def check_bias_correction():
 
 def check_cnn_bridge():
     """
-    The CNN is the one model whose gradients come from torch rather than by hand, so
-    the thing to check is that the NumPy optimizer is still what moves it. After one
-    update the module's weights must equal the optimizer's packed vector.
+    Check CNN gradients and the NumPy optimizer bridge.
+
+    After one update, the module's weights must match the optimizer's packed vector.
     """
     decay_1, decay_2, ζ = 0.9, 0.999, 1e-8
     rng = np.random.default_rng(0)
@@ -220,8 +218,7 @@ def check_cnn_bridge():
 
 def check_figure_2a(inputs, labels):
     """
-    Adding the dropout flag to mlp_forward/mlp_backward must not have moved Figure
-    2(a). Re-runs 5 epochs of Adam and compares against the saved 200-epoch history.
+    Compare five epochs of Adam against the saved Figure 2(a) baseline history.
     """
     history = MNIST_MLP(
         lambda w: Adam(3e-4, w, 0.9, 0.999, 1e-8),
@@ -367,7 +364,7 @@ def figure2a_configs():
 
 
 def run_figure2a_search(run_dir):
-    """Explicit new search only; frozen completed results never change."""
+    """Start the Figure 2(a) search in a new output directory."""
     import figure2a_search as engine
     out = Path(run_dir).resolve()
     engine.prepare(ROOT, out)
@@ -407,11 +404,7 @@ def plot_figure2a():
 
 
 def run_figure2b(run_dir, epochs=200):
-    """Existing dropout-free comparison. SFO and L2 are still missing.
-
-    Retain these four configured runs in one place, but never label the output a
-    faithful Figure 2(b) reproduction. Old short-probe loops are removed.
-    """
+    """Run the four-method dropout-free comparison; SFO and L2 are missing."""
     rates = {"adam": 1e-4, "adamax": 5e-4, "adagrad": 0.01, "sgd_nesterov": 0.03}
     out = new_run(run_dir, {"figure": "2b_partial", "epochs": epochs,
                            "rates": rates, "seed": 0, "missing": ["SFO", "L2"]})
@@ -429,10 +422,10 @@ def run_figure2b(run_dir, epochs=200):
     plot_histories(curves, "MNIST MLP without dropout — partial comparison", out / "figure_2b_partial.png")
 
 
-#-----Experiment: Convolutional Neural Networks (Figure 3; saved chart completed)----------------
+#-----Experiment: Convolutional Neural Networks (Figure 3)--------------------------------------
 
-# These settings produce the currently selected curves. They are not a completed
-# full-horizon hyperparameter search. Adam without dropout uses its saved follow-up.
+# Rates for run_figure3(); Adam beta1 and SGD momentum are fixed at 0.9.
+# The two-stage search below selects rates and momentum separately.
 CIFAR_SELECTED_RATES = {
     ("adam", False): 1e-4, ("adam", True): 3e-4,
     ("adagrad", False): 3e-3, ("adagrad", True): 3e-3,
@@ -478,7 +471,7 @@ def figure3_stage2_configs(records):
 
 
 def run_figure3_search(run_dir=FIGURE3_SEARCH_RUN, prepare_only=False):
-    """Approved two-stage, 38-trial GPU search. Completed runs are never retrained."""
+    """Run or resume the two-stage, 38-trial CNN search."""
     import figure3_search as engine
     out = Path(run_dir).resolve()
     if not out.exists():
@@ -546,10 +539,10 @@ def plot_figure3_search(run_dir):
 
 
 def run_figure3(run_dir, device="cpu"):
-    """Explicit 45-epoch runs at current rates, recording within-epoch losses.
+    """Run 45 epochs at the specified learning rates, recording minibatch losses.
 
-    The proposed rate/momentum search is documented separately, not launched here.
-    CPU is explicit because the previous MPS full-search attempt failed.
+    Uses CIFAR_SELECTED_RATES with fixed momentum and CPU execution by default.
+    Use run_figure3_search() for the two-stage rate and momentum search.
     """
     out = new_run(run_dir, {"figure": "3", "epochs": 45, "seed": 0, "device": str(device),
                            "rates": {f"{n}_{d}": a for (n, d), a in CIFAR_SELECTED_RATES.items()}})
@@ -660,11 +653,11 @@ def plot_figure3():
 
 
 
-#-----Benchmark: current CPU/GPU Figure 3 runtime (no search)-------------------------------------
+#-----Benchmark: CPU/GPU Figure 3 runtime (no search)---------------------------------------------
 
 
 def benchmark_figure3(run_dir, device="cpu", threads=4, screen=False):
-    """Bounded timing pilot, using existing whitened data and the real NumPy bridge.
+    """Measure CNN runtime using cached whitened data and NumPy optimizer updates.
 
     Screen: Adam+dropout, four warmup batches and 24 measured batches.
     Full: each of six configurations for one full epoch; Adam+dropout gets a
@@ -767,10 +760,10 @@ def benchmark_figure3(run_dir, device="cpu", threads=4, screen=False):
 
 
 def run_figure4(run_dir, epochs=100):
-    """Full beta/rate grid with losses at epochs 10 and 100.
+    """Run the full beta/rate grid and record losses at epochs 10 and 100.
 
-    Removes the obsolete best-finite-loss rule, which hid later divergence.
-    Existing partial 10-epoch files are not reused as completed 100-epoch runs.
+    Mark divergent configurations and retain losses from completed epochs.
+    Partial 10-epoch runs do not count as completed 100-epoch runs.
     """
     if epochs != 100:
         raise ValueError("Figure 4 requires both the 10-epoch and 100-epoch endpoints")
@@ -852,7 +845,7 @@ def plot_figure4(run_dir):
 
 
 if __name__ == "__main__":
-    # Internal worker/supervisor commands used by the managed, frozen GPU job.
+    # Worker/supervisor commands for the frozen Figure 3 source snapshot.
     if len(sys.argv) > 1:
         import argparse
         import figure3_search as engine
@@ -867,7 +860,7 @@ if __name__ == "__main__":
             raise SystemExit(0)
         raise SystemExit(engine.supervise(args.run_dir))
 
-    # Completed blocks are commented out. Uncomment only the run you want.
+    # Uncomment the experiment or plot to run.
     # No dataset is loaded and no training starts while these remain commented.
 
 #-----Checks-----------------------------------------------------------------------------------
@@ -883,33 +876,32 @@ if __name__ == "__main__":
     # the historical baseline setup, not a verified paper-faithful rerun.
     # run_figure1(RESULTS / "figure1_new_baseline")
 
-#-----Experiment: MLP with Dropout (Figure 2a; completed — no rerun needed)-----------------------
+#-----Experiment: MLP with Dropout (Figure 2a; completed)----------------------------------------
     # 26/26 trials finished; Adam α=0.00009, AdaGrad α=0.01. Other curves unchanged.
     # plot_figure2a()
-    # Only for an explicitly requested NEW search; requires a new output path:
+    # Start a new search in a new output directory.
     # run_figure2a_search(RESULTS / "figure2a_new_search")
 
-#-----Experiment: MLP, Deterministic Cost (Figure 2b; incomplete — excluded from current work)----
+#-----Experiment: MLP, Deterministic Cost (Figure 2b; incomplete)---------------------------------
     # Four-method extension; SFO and L2 still absent. Not a finished paper figure.
     # run_figure2b(RESULTS / "figure2b_new_partial")
 
-#-----Experiment: Convolutional Neural Networks (Figure 3; current saved chart completed)--------
+#-----Experiment: Convolutional Neural Networks (Figure 3)--------------------------------------
     # Replot the selected saved histories; no training:
     # plot_figure3()
-    # New fixed-setting 45-epoch runs are available, but have NOT been requested:
+    # Run 45 epochs at the specified learning rates.
     # run_figure3(RESULTS / "figure3_new_fixed_settings", device="cpu")
-    # Approved reduced GPU search: 22 learning-rate trials + 16 momentum trials.
-    # Run/resume only when the managed supervisor is not already running:
+    # Two-stage search: 22 learning-rate trials + 16 momentum trials.
+    # Run/resume only when no worker or supervisor is already running:
     # run_figure3_search(FIGURE3_SEARCH_RUN)
     # Saved-data plot selects the completed search automatically when available.
 
-#-----Benchmark: Figure 3 runtime (bounded pilot only; no full search)----------------------------
+#-----Benchmark: Figure 3 runtime (no search)----------------------------------------------------
     # benchmark_figure3(RESULTS / "figure3_cpu_benchmark", device="cpu", threads=4)
     # benchmark_figure3(RESULTS / "figure3_gpu_benchmark", device="mps", threads=4)
 
-#-----Experiment: Bias-Correction Term (Figure 4; incomplete — not run by default)---------------
-    # Previous partial 10-epoch/best-finite-loss experiment is obsolete.
-    # This replacement uses the complete grid and endpoints at 10 and 100 epochs.
+#-----Experiment: Bias-Correction Term (Figure 4; incomplete)------------------------------------
+    # Full grid with losses at epochs 10 and 100; divergent configurations marked.
     # run_figure4(RESULTS / "figure4_new_full_grid")
     # plot_figure4(RESULTS / "figure4_new_full_grid")
 
