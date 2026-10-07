@@ -116,7 +116,6 @@ to the paper's late-training ordering, but does not establish an exact
 reproduction: Adam is still slower early in this run, the search uses one seed,
 and only learning rates for two optimizers were retuned. The retained dropout
 rates are implementation choices, not verified settings from the Adam paper.
-One seed does not establish robustness or a global optimum.
 
 The [original chart](results/figure2a_search_20261002_v1/baseline/figure_2_recreation.png)
 shows AdaGrad finishing below Adam. Trial histories, diagnostics, and source
@@ -289,8 +288,7 @@ output directory and do not resume partial runs.
 Do not launch a second worker or supervisor, or restart a healthy job. Verify that
 both have stopped before resuming; locks reject duplicate processes. Numerical
 failures are recorded per trial; process or GPU errors stop the search. Local
-macOS notifications report progress and interruptions, but an offline supervisor
-cannot alert and notification settings may suppress banners.
+macOS notifications report progress and interruptions.
 
 Figure 3 automatically replaces `assets/figure_3_recreation.png` only after all
 planned trials are accounted for and six winners are selected. It checks for
